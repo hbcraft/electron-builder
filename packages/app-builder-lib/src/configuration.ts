@@ -195,7 +195,7 @@ export interface Configuration extends CommonConfiguration, PlatformSpecificBuil
   readonly electronCompile?: boolean
 
   /**
-   * The [electron-download](https://github.com/electron-userland/electron-download#usage) options.
+   * The [electron/get](https://github.com/electron/get) options.
    */
   readonly electronDownload?: ElectronDownloadOptions
 
