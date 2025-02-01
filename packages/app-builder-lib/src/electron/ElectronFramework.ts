@@ -14,7 +14,7 @@ import { createMacApp } from "./electronMac"
 import { computeElectronVersion, getElectronVersionFromInstalled } from "./electronVersion"
 import { addWinAsarIntegrity } from "./electronWin"
 import injectFFMPEG from "./injectFFMPEG"
-import { downloadArtifact, ElectronPlatformArtifactDetails, GotDownloaderOptions, MirrorOptions } from "@electron/get"
+import { downloadArtifact, ElectronDownloadCacheMode, ElectronPlatformArtifactDetails, GotDownloaderOptions, MirrorOptions } from "@electron/get"
 import { MultiProgress } from "electron-publish/out/multiProgress"
 import { WriteStream as TtyWriteStream } from "tty"
 import * as chalk from "chalk"
@@ -185,7 +185,8 @@ class ElectronFramework implements Framework {
       await mkdir(tempDirectory)
 
       const artifactConfig: ElectronPlatformArtifactDetails = {
-        cacheRoot: cacheEnv,
+        cacheMode: ElectronDownloadCacheMode.ReadOnly,
+        cacheRoot: tempDirectory,
         tempDirectory,
         ...(electronDownload ?? {}),
         platform: platformName,

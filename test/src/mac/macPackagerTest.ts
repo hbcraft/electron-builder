@@ -153,7 +153,6 @@ test.ifMac("electron mirror", () => {
     config: {
       downloadAlternateFFmpeg: true,
       electronDownload: {
-        force: true,
         mirrorOptions: {
           mirror: "https://npmmirror.com/mirrors/electron/", // China
         },
