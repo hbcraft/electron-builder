@@ -957,11 +957,6 @@
       },
       "type": "object"
     },
-    "Downloader<any>": {
-      "additionalProperties": false,
-      "description": "Generic interface for the artifact downloader library.\nThe default implementation is {@link GotDownloader},\nbut any custom downloader can be passed to `@electron/get` via\nthe {@link ElectronDownloadRequestOptions.downloader} option.",
-      "type": "object"
-    },
     "ElectronBrandingOptions": {
       "additionalProperties": false,
       "description": "Electron distributables branding options.",
@@ -978,29 +973,11 @@
     "ElectronDownloadOptions": {
       "additionalProperties": false,
       "properties": {
-        "cacheMode": {
-          "description": "Controls the cache read and write behavior.\n\nWhen set to either {@link ElectronDownloadCacheMode.ReadOnlyReadOnly} or\n{@link ElectronDownloadCacheMode.BypassBypass}, the caller is responsible\nfor cleaning up the returned file path once they are done using it\n(e.g. via `fs.remove(path.dirname(pathFromElectronGet))`).\n\nWhen set to either {@link ElectronDownloadCacheMode.WriteOnlyWriteOnly} or\n{@link ElectronDownloadCacheMode.ReadWriteReadWrite} (the default), the caller\nshould not move or delete the file path that is returned as the path\npoints directly to the disk cache.\n\nThis option cannot be used in conjunction with {@link ElectronDownloadRequestOptions.force}.",
-          "enum": [
-            0,
-            1,
-            2,
-            3
-          ],
-          "type": "number"
-        },
-        "cacheRoot": {
-          "description": "The directory that caches Electron artifact downloads.",
-          "type": "string"
-        },
         "checksums": {
           "type": "object"
         },
         "downloadOptions": {
           "description": "Options passed to the downloader module."
-        },
-        "downloader": {
-          "$ref": "#/definitions/Downloader<any>",
-          "description": "A custom {@link Downloader} class used to download artifacts. Defaults to the\nbuilt-in {@link GotDownloader}."
         },
         "force": {
           "description": "Whether to download an artifact regardless of whether it's in the cache directory.",
@@ -1013,10 +990,6 @@
         "mirrorOptions": {
           "$ref": "#/definitions/MirrorOptions",
           "description": "Options related to specifying an artifact mirror."
-        },
-        "tempDirectory": {
-          "description": "A temporary directory for downloads.\nIt is used before artifacts are put into cache.",
-          "type": "string"
         },
         "unsafelyDisableChecksums": {
           "description": "When set to `true`, disables checking that the artifact download completed successfully\nwith the correct payload.",

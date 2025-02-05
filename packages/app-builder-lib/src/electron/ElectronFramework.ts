@@ -37,7 +37,10 @@ export function createBrandingOpts(opts: Configuration): Required<ElectronBrandi
   }
 }
 
-export type ElectronDownloadOptions = Omit<ElectronPlatformArtifactDetails, "platform" | "arch" | "version" | "artifactName" | "artifactSuffix" | "customFilename"> & {
+export type ElectronDownloadOptions = Omit<
+  ElectronPlatformArtifactDetails,
+  "platform" | "arch" | "version" | "artifactName" | "artifactSuffix" | "customFilename" | "tempDirectory" | "downloader" | "cacheMode" | "cacheRoot"
+> & {
   mirrorOptions: Omit<MirrorOptions, "customDir" | "customFilename" | "customVersion">
 }
 
@@ -119,7 +122,6 @@ class ElectronFramework implements Framework {
   }
 
   async prepareApplicationStageDirectory(options: PrepareApplicationStageDirectoryOptions) {
-    // await unpack(options, createDownloadOpts(options.packager.config, options.platformName, options.arch, this.version), this.distMacOsAppName)
     await this.unpack(options, this.version, this.productName)
     if (options.packager.config.downloadAlternateFFmpeg) {
       await injectFFMPEG(this.progress, options, this.version, this.productName)
@@ -131,30 +133,24 @@ class ElectronFramework implements Framework {
   }
 
   private async unpack(prepareOptions: PrepareApplicationStageDirectoryOptions, version: string, productFilename: string) {
+    const { platformName, arch } = prepareOptions
+    const zipFileName = `electron-v${version}-${platformName}-${arch}.zip`
+
+    const dist = await this.resolveElectronDist(prepareOptions, zipFileName)
+    await this.copyOrDownloadElectronDist(dist, prepareOptions, version, zipFileName)
+
+    await this.cleanupAfterUnpack(prepareOptions, productFilename)
+  }
+
+  private async copyOrDownloadElectronDist(dist: string | null, prepareOptions: PrepareApplicationStageDirectoryOptions, version: string, zipFileName: string) {
     const { packager, appOutDir, platformName, arch } = prepareOptions
     const {
       config: { electronDownload },
     } = packager
-
-    const electronDist = packager.config.electronDist || null
-    let dist: string | null = null
-    // check if supplied a custom electron distributable/fork/predownloaded directory
-    if (typeof electronDist === "string") {
-      let resolvedDist: string
-      // check if custom electron hook file for import  resolving
-      if ((await statOrNull(electronDist))?.isFile()) {
-        const customElectronDist: any = await resolveFunction(packager.appInfo.type, electronDist, "electronDist")
-        resolvedDist = await Promise.resolve(typeof customElectronDist === "function" ? customElectronDist(prepareOptions) : customElectronDist)
-      } else {
-        resolvedDist = electronDist
-      }
-      dist = path.isAbsolute(resolvedDist) ? resolvedDist : path.resolve(packager.projectDir, resolvedDist)
-    }
-    const zipFile = `electron-v${version}-${platformName}-${arch}.zip`
     if (dist != null) {
-      const zipFilePath = path.join(dist, zipFile)
+      const zipFilePath = path.join(dist, zipFileName)
       if (await exists(zipFilePath)) {
-        log.info({ dist, zipFile }, "resolved electronDist")
+        log.info({ dist, zipFile: zipFileName }, "resolved electronDist")
         dist = zipFilePath
       } else if ((await statOrNull(dist))?.isDirectory()) {
         const source = path.isAbsolute(dist) ? dist : packager.getElectronSrcDir(dist)
@@ -167,26 +163,28 @@ class ElectronFramework implements Framework {
         dist = null
       } else {
         log.warn(
-          { searchDir: log.filePath(dist), zipTarget: zipFile },
+          { searchDir: log.filePath(dist), zipTarget: zipFileName },
           "custom `electronDist` provided but no zip or unpacked electron directory found; falling back to official electron app"
         )
       }
     } else {
       let cacheEnv = process.env.ELECTRON_BUILDER_CACHE
-      if (cacheEnv && isEmptyOrSpaces(cacheEnv) && (await exists(cacheEnv))) {
+      if (!isEmptyOrSpaces(cacheEnv) && (await statOrNull(cacheEnv))?.isDirectory()) {
         cacheEnv = path.resolve(cacheEnv)
+      } else {
+        cacheEnv = undefined
       }
 
-      log.info({ zipFile }, "downloading")
-      const progressBar = this.progress?.createBar(`${" ".repeat(PADDING + 2)}[:bar] :percent | ${chalk.green(zipFile)}`, { total: 100 })
+      log.info({ zipFile: zipFileName }, "downloading")
+      const progressBar = this.progress?.createBar(`${" ".repeat(PADDING + 2)}[:bar] :percent | ${chalk.green(zipFileName)}`, { total: 100 })
       progressBar?.render()
 
       const tempDirectory = await packager.info.tempDirManager.getTempDir({ prefix: "temp-electron" })
       await mkdir(tempDirectory)
 
       const artifactConfig: ElectronPlatformArtifactDetails = {
-        cacheMode: ElectronDownloadCacheMode.ReadOnly,
-        cacheRoot: tempDirectory,
+        cacheMode: cacheEnv ? ElectronDownloadCacheMode.ReadOnly : undefined,
+        cacheRoot: cacheEnv,
         tempDirectory,
         ...(electronDownload ?? {}),
         platform: platformName,
@@ -210,8 +208,31 @@ class ElectronFramework implements Framework {
       await executeAppBuilder(["unzip", "--input", dist, "--output", appOutDir])
       log.info(null, "electron unpacked successfully")
     }
+    return dist
+  }
 
-    await this.cleanupAfterUnpack(prepareOptions, productFilename)
+  private async resolveElectronDist(prepareOptions: PrepareApplicationStageDirectoryOptions, zipFileName: string) {
+    const { packager } = prepareOptions
+
+    const electronDist = packager.config.electronDist || null
+    let dist: string | null = null
+    // check if supplied a custom electron distributable/fork/predownloaded directory
+    if (typeof electronDist === "string") {
+      let resolvedDist: string
+      // check if custom electron hook file for import  resolving
+      if ((await statOrNull(electronDist))?.isFile() && !electronDist.endsWith(zipFileName)) {
+        const customElectronDist = await resolveFunction<string | ((options: PrepareApplicationStageDirectoryOptions) => string)>(
+          packager.appInfo.type,
+          electronDist,
+          "electronDist"
+        )
+        resolvedDist = await Promise.resolve(typeof customElectronDist === "function" ? customElectronDist(prepareOptions) : customElectronDist)
+      } else {
+        resolvedDist = electronDist
+      }
+      dist = path.isAbsolute(resolvedDist) ? resolvedDist : path.resolve(packager.projectDir, resolvedDist)
+    }
+    return dist
   }
 
   private async cleanupAfterUnpack(prepareOptions: PrepareApplicationStageDirectoryOptions, productFilename: string) {
