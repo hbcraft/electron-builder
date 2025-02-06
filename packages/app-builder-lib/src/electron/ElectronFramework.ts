@@ -1,20 +1,10 @@
-import {
-  asArray,
-  copyDir,
-  DO_NOT_USE_HARD_LINKS,
-  executeAppBuilder,
-  exists,
-  getUserDefinedCacheDir,
-  log,
-  MAX_FILE_REQUESTS,
-  PADDING,
-  statOrNull,
-  unlinkIfExists,
-} from "builder-util"
-import { emptyDir, mkdir, readdir, rename, rm } from "fs-extra"
+import { asArray, copyDir, DO_NOT_USE_HARD_LINKS, executeAppBuilder, exists, log, MAX_FILE_REQUESTS, statOrNull, unlinkIfExists } from "builder-util"
+import { MultiProgress } from "electron-publish/out/multiProgress"
+import { emptyDir, readdir, rename, rm } from "fs-extra"
 import * as fs from "fs/promises"
 import * as path from "path"
 import asyncPool from "tiny-async-pool"
+import { WriteStream as TtyWriteStream } from "tty"
 import { Configuration } from "../configuration"
 import { BeforeCopyExtraFilesOptions, Framework, PrepareApplicationStageDirectoryOptions } from "../Framework"
 import { Packager, Platform, PlatformPackager } from "../index"
@@ -26,10 +16,7 @@ import { createMacApp } from "./electronMac"
 import { computeElectronVersion, getElectronVersionFromInstalled } from "./electronVersion"
 import { addWinAsarIntegrity } from "./electronWin"
 import injectFFMPEG from "./injectFFMPEG"
-import { downloadArtifact, ElectronDownloadCacheMode, ElectronPlatformArtifactDetails, GotDownloaderOptions, MirrorOptions } from "@electron/get"
-import { MultiProgress } from "electron-publish/out/multiProgress"
-import { WriteStream as TtyWriteStream } from "tty"
-import * as chalk from "chalk"
+import { downloadArtifact } from "../util/electronGet"
 
 export type ElectronPlatformName = "darwin" | "linux" | "win32" | "mas"
 
@@ -47,13 +34,6 @@ export function createBrandingOpts(opts: Configuration): Required<ElectronBrandi
     projectName: opts.electronBranding?.projectName || "electron",
     productName: opts.electronBranding?.productName || "Electron",
   }
-}
-
-export type ElectronDownloadOptions = Omit<
-  ElectronPlatformArtifactDetails,
-  "platform" | "arch" | "version" | "artifactName" | "artifactSuffix" | "customFilename" | "tempDirectory" | "downloader" | "cacheMode" | "cacheRoot"
-> & {
-  mirrorOptions: Omit<MirrorOptions, "customDir" | "customFilename" | "customVersion">
 }
 
 async function beforeCopyExtraFiles(options: BeforeCopyExtraFilesOptions) {
@@ -181,36 +161,19 @@ class ElectronFramework implements Framework {
       }
     } else {
       log.info({ zipFile: zipFileName }, "downloading")
-      const progressBar = this.progress?.createBar(`${" ".repeat(PADDING + 2)}[:bar] :percent | ${chalk.green(zipFileName)}`, { total: 100 })
-      progressBar?.render()
-
-      const tempDirectory = await packager.info.tempDirManager.getTempDir({ prefix: "temp-electron" })
-      await mkdir(tempDirectory)
-
-      const cacheEnv = await getUserDefinedCacheDir()
-      const artifactConfig: ElectronPlatformArtifactDetails = {
-        cacheMode: cacheEnv ? ElectronDownloadCacheMode.ReadOnly : undefined,
-        cacheRoot: cacheEnv,
-        tempDirectory,
-        ...(electronDownload ?? {}),
-        platform: platformName,
+      dist = await downloadArtifact({
+        electronDownload,
+        artifactName: "electron",
+        platformName,
         arch,
         version,
-        artifactName: "electron",
-        downloadOptions: {
-          getProgressCallback: progress => {
-            if (progressBar) {
-              progressBar.update(progress.percent)
-            }
-          },
-        } as GotDownloaderOptions,
-      }
-      dist = await downloadArtifact(artifactConfig)
-      progressBar?.update(100)
-      progressBar?.terminate()
+        tempDirManager: packager.info.tempDirManager,
+        progress: this.progress,
+      })
     }
 
     if (dist?.endsWith(".zip")) {
+      log.debug(null, "extracting electron zip")
       await executeAppBuilder(["unzip", "--input", dist, "--output", appOutDir])
       log.info(null, "electron unpacked successfully")
     }

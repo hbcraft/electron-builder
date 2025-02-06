@@ -1,25 +1,17 @@
+import { executeAppBuilder, log } from "builder-util"
+import { MultiProgress } from "electron-publish/out/multiProgress"
 import * as fs from "fs"
 import * as path from "path"
-import { ElectronPlatformName } from "./ElectronFramework"
-import { executeAppBuilder, getUserDefinedCacheDir, log, PADDING } from "builder-util"
 import { PrepareApplicationStageDirectoryOptions } from "../Framework"
-import { downloadArtifact, ElectronPlatformArtifactDetails, GotDownloaderOptions } from "@electron/get"
-import * as chalk from "chalk"
-import { MultiProgress } from "electron-publish/out/multiProgress"
-import { mkdir } from "fs-extra"
+import { downloadArtifact } from "../util/electronGet"
+import { ElectronPlatformName } from "./ElectronFramework"
 
 // NOTE: Adapted from https://github.com/MarshallOfSound/electron-packager-plugin-non-proprietary-codecs-ffmpeg to resolve dependency vulnerabilities
 const downloadFFMPEG = async (progress: MultiProgress | null, options: PrepareApplicationStageDirectoryOptions, version: string) => {
   const ffmpegFileName = `ffmpeg-v${version}-${options.platformName}-${options.arch}`
 
   log.info({ ffmpegFileName }, "downloading")
-  const progressBar = progress?.createBar(`${" ".repeat(PADDING + 2)}[:bar] :percent | ${chalk.green(ffmpegFileName)}`, { total: 100 })
-  progressBar?.render()
 
-  const tempDirectory = await options.packager.info.tempDirManager.getTempDir({ prefix: "temp-electron" })
-  await mkdir(tempDirectory)
-
-  const cacheEnv = await getUserDefinedCacheDir()
   const {
     packager: {
       config: { electronDownload },
@@ -28,27 +20,19 @@ const downloadFFMPEG = async (progress: MultiProgress | null, options: PrepareAp
     arch,
   } = options
 
-  const artifactConfig: ElectronPlatformArtifactDetails = {
-    cacheRoot: cacheEnv,
-    tempDirectory,
-    ...(electronDownload ?? {}),
-    platform: platformName,
+  const file = await downloadArtifact({
+    electronDownload,
+    artifactName: "ffmpeg",
+    platformName,
     arch,
     version,
-    artifactName: "ffmpeg",
-    downloadOptions: {
-      getProgressCallback: progress => {
-        if (progressBar) {
-          progressBar.update(progress.percent)
-        }
-      },
-    } as GotDownloaderOptions,
-  }
-  const file = await downloadArtifact(artifactConfig)
+    tempDirManager: options.packager.info.tempDirManager,
+    progress,
+  })
+
   const ffmpegDir = await options.packager.info.tempDirManager.getTempDir({ prefix: "ffmpeg" })
+  log.debug(null, "extracting ffmpeg zip")
   await executeAppBuilder(["unzip", "--input", file, "--output", ffmpegDir])
-  progressBar?.update(100)
-  progressBar?.terminate()
   return ffmpegDir
 }
 
