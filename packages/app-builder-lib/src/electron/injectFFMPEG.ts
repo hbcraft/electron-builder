@@ -1,8 +1,7 @@
 import * as fs from "fs"
 import * as path from "path"
 import { ElectronPlatformName } from "./ElectronFramework"
-
-import { executeAppBuilder, exists, isEmptyOrSpaces, log, PADDING } from "builder-util"
+import { executeAppBuilder, getUserDefinedCacheDir, log, PADDING } from "builder-util"
 import { PrepareApplicationStageDirectoryOptions } from "../Framework"
 import { downloadArtifact, ElectronPlatformArtifactDetails, GotDownloaderOptions } from "@electron/get"
 import * as chalk from "chalk"
@@ -20,10 +19,7 @@ const downloadFFMPEG = async (progress: MultiProgress | null, options: PrepareAp
   const tempDirectory = await options.packager.info.tempDirManager.getTempDir({ prefix: "temp-electron" })
   await mkdir(tempDirectory)
 
-  let cacheEnv = process.env.ELECTRON_BUILDER_CACHE
-  if (cacheEnv && isEmptyOrSpaces(cacheEnv) && (await exists(cacheEnv))) {
-    cacheEnv = path.resolve(cacheEnv)
-  }
+  const cacheEnv = await getUserDefinedCacheDir()
   const {
     packager: {
       config: { electronDownload },

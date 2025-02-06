@@ -1,4 +1,16 @@
-import { asArray, copyDir, DO_NOT_USE_HARD_LINKS, executeAppBuilder, exists, isEmptyOrSpaces, log, MAX_FILE_REQUESTS, PADDING, statOrNull, unlinkIfExists } from "builder-util"
+import {
+  asArray,
+  copyDir,
+  DO_NOT_USE_HARD_LINKS,
+  executeAppBuilder,
+  exists,
+  getUserDefinedCacheDir,
+  log,
+  MAX_FILE_REQUESTS,
+  PADDING,
+  statOrNull,
+  unlinkIfExists,
+} from "builder-util"
 import { emptyDir, mkdir, readdir, rename, rm } from "fs-extra"
 import * as fs from "fs/promises"
 import * as path from "path"
@@ -168,13 +180,6 @@ class ElectronFramework implements Framework {
         )
       }
     } else {
-      let cacheEnv = process.env.ELECTRON_BUILDER_CACHE
-      if (!isEmptyOrSpaces(cacheEnv) && (await statOrNull(cacheEnv))?.isDirectory()) {
-        cacheEnv = path.resolve(cacheEnv)
-      } else {
-        cacheEnv = undefined
-      }
-
       log.info({ zipFile: zipFileName }, "downloading")
       const progressBar = this.progress?.createBar(`${" ".repeat(PADDING + 2)}[:bar] :percent | ${chalk.green(zipFileName)}`, { total: 100 })
       progressBar?.render()
@@ -182,6 +187,7 @@ class ElectronFramework implements Framework {
       const tempDirectory = await packager.info.tempDirManager.getTempDir({ prefix: "temp-electron" })
       await mkdir(tempDirectory)
 
+      const cacheEnv = await getUserDefinedCacheDir()
       const artifactConfig: ElectronPlatformArtifactDetails = {
         cacheMode: cacheEnv ? ElectronDownloadCacheMode.ReadOnly : undefined,
         cacheRoot: cacheEnv,
@@ -242,12 +248,8 @@ class ElectronFramework implements Framework {
     const localesDir = isMac ? resourcesPath : path.resolve(out, "locales")
 
     return Promise.all([
-      unlinkIfExists(path.join(resourcesPath, "default_app.asar")).catch(() => {
-        /* ignore */
-      }),
-      unlinkIfExists(path.join(out, "version")).catch(() => {
-        /* ignore */
-      }),
+      unlinkIfExists(path.join(resourcesPath, "default_app.asar")),
+      unlinkIfExists(path.join(out, "version")),
       !isMac
         ? rename(path.join(out, "LICENSE"), path.join(out, "LICENSE.electron.txt")).catch(() => {
             /* ignore */
