@@ -161,15 +161,16 @@ class ElectronFramework implements Framework {
       }
     } else {
       log.info({ zipFile: zipFileName }, "downloading")
-      dist = await downloadArtifact({
-        electronDownload,
-        artifactName: "electron",
-        platformName,
-        arch,
-        version,
-        tempDirManager: packager.info.tempDirManager,
-        progress: this.progress,
-      })
+      dist = await downloadArtifact(
+        {
+          electronDownload,
+          artifactName: "electron",
+          platformName,
+          arch,
+          version,
+        },
+        this.progress
+      )
     }
 
     if (dist?.endsWith(".zip")) {

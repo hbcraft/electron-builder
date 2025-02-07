@@ -20,15 +20,16 @@ const downloadFFMPEG = async (progress: MultiProgress | null, options: PrepareAp
     arch,
   } = options
 
-  const file = await downloadArtifact({
-    electronDownload,
-    artifactName: "ffmpeg",
-    platformName,
-    arch,
-    version,
-    tempDirManager: options.packager.info.tempDirManager,
-    progress,
-  })
+  const file = await downloadArtifact(
+    {
+      electronDownload,
+      artifactName: "ffmpeg",
+      platformName,
+      arch,
+      version,
+    },
+    progress
+  )
 
   const ffmpegDir = await options.packager.info.tempDirManager.getTempDir({ prefix: "ffmpeg" })
   log.debug(null, "extracting ffmpeg zip")

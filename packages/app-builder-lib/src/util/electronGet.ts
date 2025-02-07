@@ -2,8 +2,6 @@ import { downloadArtifact as _downloadArtifact, ElectronDownloadCacheMode, Elect
 import { getUserDefinedCacheDir, PADDING } from "builder-util"
 import * as chalk from "chalk"
 import { MultiProgress } from "electron-publish/out/multiProgress"
-import { mkdir } from "fs-extra"
-import { TmpDir } from "temp-file"
 
 export type ElectronDownloadOptions = Omit<
   ElectronPlatformArtifactDetails,
@@ -18,25 +16,19 @@ type ElectronGetDownloadConfig = {
   platformName: string
   arch: string
   version: string
-  tempDirManager: TmpDir
-  progress: MultiProgress | null
 }
 
-export async function downloadArtifact(config: ElectronGetDownloadConfig) {
-  const { progress, tempDirManager, electronDownload, arch, version, platformName, artifactName } = config
+export async function downloadArtifact(config: ElectronGetDownloadConfig, progress: MultiProgress | null) {
+  const { electronDownload, arch, version, platformName, artifactName } = config
 
   const progressBar = progress?.createBar(`${" ".repeat(PADDING + 2)}[:bar] :percent | ${chalk.green(artifactName)}`, { total: 100 })
   progressBar?.render()
-
-  const tempDirectory = await tempDirManager.getTempDir({ prefix: `temp-${artifactName}` })
-  await mkdir(tempDirectory)
 
   const cacheEnv = await getUserDefinedCacheDir()
 
   const artifactConfig: ElectronPlatformArtifactDetails = {
     cacheMode: cacheEnv ? ElectronDownloadCacheMode.ReadOnly : undefined,
     cacheRoot: cacheEnv,
-    tempDirectory,
     ...(electronDownload ?? {}),
     platform: platformName,
     arch,
