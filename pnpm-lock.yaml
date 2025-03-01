@@ -250,8 +250,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       '@types/js-yaml':
-        specifier: 4.0.3
-        version: 4.0.3
+        specifier: 4.0.9
+        version: 4.0.9
       '@types/plist':
         specifier: 3.0.5
         version: 3.0.5
@@ -338,8 +338,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       '@types/js-yaml':
-        specifier: 4.0.3
-        version: 4.0.3
+        specifier: 4.0.9
+        version: 4.0.9
       '@types/source-map-support':
         specifier: 0.5.4
         version: 0.5.4
@@ -392,8 +392,8 @@ importers:
         specifier: 9.0.13
         version: 9.0.13
       '@types/js-yaml':
-        specifier: 4.0.3
-        version: 4.0.3
+        specifier: 4.0.9
+        version: 4.0.9
       temp-file:
         specifier: 3.4.0
         version: 3.4.0
@@ -546,8 +546,8 @@ importers:
         specifier: 9.0.13
         version: 9.0.13
       '@types/js-yaml':
-        specifier: 4.0.3
-        version: 4.0.3
+        specifier: 4.0.9
+        version: 4.0.9
       '@types/lodash.escaperegexp':
         specifier: 4.1.6
         version: 4.1.6
@@ -2075,6 +2075,9 @@ packages:
 
   '@types/js-yaml@4.0.3':
     resolution: {integrity: sha512-5t9BhoORasuF5uCPr+d5/hdB++zRFUTMIZOzbNkr+jZh3yQht4HYbRDyj9fY8n2TZT30iW9huzav73x4NikqWg==}
+
+  '@types/js-yaml@4.0.9':
+    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -4284,6 +4287,7 @@ packages:
 
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
+    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -7904,6 +7908,8 @@ snapshots:
       pretty-format: 26.6.2
 
   '@types/js-yaml@4.0.3': {}
+
+  '@types/js-yaml@4.0.9': {}
 
   '@types/json-schema@7.0.15': {}
 
