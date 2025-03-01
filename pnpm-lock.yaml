@@ -552,8 +552,8 @@ importers:
         specifier: 4.1.6
         version: 4.1.6
       '@types/lodash.isequal':
-        specifier: 4.5.5
-        version: 4.5.5
+        specifier: 4.5.8
+        version: 4.5.8
       '@types/semver':
         specifier: ^7.3.13
         version: 7.5.8
@@ -2088,8 +2088,8 @@ packages:
   '@types/lodash.escaperegexp@4.1.6':
     resolution: {integrity: sha512-uENiqxLlqh6RzeE1cC6Z2gHqakToN9vKlTVCFkSVjAfeMeh2fY0916tHwJHeeKs28qB/hGYvKuampGYH5QDVCw==}
 
-  '@types/lodash.isequal@4.5.5':
-    resolution: {integrity: sha512-4IKbinG7MGP131wRfceK6W4E/Qt3qssEFLF30LnJbjYiSfHGGRU/Io8YxXrZX109ir+iDETC8hw8QsDijukUVg==}
+  '@types/lodash.isequal@4.5.8':
+    resolution: {integrity: sha512-uput6pg4E/tj2LGxCZo9+y27JNyB2OZuuI/T5F+ylVDYuqICLG2/ktjxx0v6GvVntAf8TvEzeQLcV0ffRirXuA==}
 
   '@types/lodash@4.17.13':
     resolution: {integrity: sha512-lfx+dftrEZcdBPczf9d0Qv0x+j/rfNCMuC6OcfXmO8gkfeNAY88PgKUbvG56whcN23gc27yenwF6oJZXGFpYxg==}
@@ -4284,6 +4284,7 @@ packages:
 
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
+    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -7919,7 +7920,7 @@ snapshots:
     dependencies:
       '@types/lodash': 4.17.13
 
-  '@types/lodash.isequal@4.5.5':
+  '@types/lodash.isequal@4.5.8':
     dependencies:
       '@types/lodash': 4.17.13
 
