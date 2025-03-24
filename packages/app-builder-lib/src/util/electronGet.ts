@@ -3,9 +3,7 @@ import { getUserDefinedCacheDir, PADDING } from "builder-util"
 import * as chalk from "chalk"
 import { MultiProgress } from "electron-publish/out/multiProgress"
 
-
 const configToPromise = new Map<string, Promise<string>>()
-
 
 export type ElectronDownloadOptions = Omit<
   ElectronPlatformArtifactDetails,
