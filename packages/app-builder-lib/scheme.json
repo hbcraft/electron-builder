@@ -1730,7 +1730,7 @@
         },
         "detectUpdateChannel": {
           "default": true,
-          "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
+          "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.\nThis does *not* apply to github publishing, which will [never auto-detect the update channel](https://github.com/electron-userland/electron-builder/issues/8589).",
           "type": "boolean"
         },
         "disableDefaultIgnoredFiles": {
@@ -2411,7 +2411,7 @@
         },
         "detectUpdateChannel": {
           "default": true,
-          "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
+          "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.\nThis does *not* apply to github publishing, which will [never auto-detect the update channel](https://github.com/electron-userland/electron-builder/issues/8589).",
           "type": "boolean"
         },
         "disableDefaultIgnoredFiles": {
@@ -3043,7 +3043,7 @@
         },
         "detectUpdateChannel": {
           "default": true,
-          "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
+          "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.\nThis does *not* apply to github publishing, which will [never auto-detect the update channel](https://github.com/electron-userland/electron-builder/issues/8589).",
           "type": "boolean"
         },
         "disableDefaultIgnoredFiles": {
@@ -6022,7 +6022,7 @@
           ]
         },
         "customSquirrelVendorDir": {
-          "description": "The custom squirrel vender dir. If not specified will use the Squirrel.Windows that is shipped with electron-installer(https://github.com/electron/windows-installer/tree/main/vendor).\nAfter https://github.com/electron-userland/electron-builder-binaries/pull/56 merged, will add `electron-builder-binaries` to get the latest version of squirrel.",
+          "description": "The custom squirrel vendor dir. If not specified will use the Squirrel.Windows that is shipped with electron-installer(https://github.com/electron/windows-installer/tree/main/vendor).\nAfter https://github.com/electron-userland/electron-builder-binaries/pull/56 merged, will add `electron-builder-binaries` to get the latest version of squirrel.",
           "type": "string"
         },
         "iconUrl": {
@@ -6286,7 +6286,7 @@
         },
         "detectUpdateChannel": {
           "default": true,
-          "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
+          "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.\nThis does *not* apply to github publishing, which will [never auto-detect the update channel](https://github.com/electron-userland/electron-builder/issues/8589).",
           "type": "boolean"
         },
         "disableDefaultIgnoredFiles": {
@@ -6972,7 +6972,7 @@
     },
     "detectUpdateChannel": {
       "default": true,
-      "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
+      "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.\nThis does *not* apply to github publishing, which will [never auto-detect the update channel](https://github.com/electron-userland/electron-builder/issues/8589).",
       "type": "boolean"
     },
     "directories": {

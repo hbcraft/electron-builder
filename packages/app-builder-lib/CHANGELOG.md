@@ -1,5 +1,71 @@
 # app-builder-lib
 
+## 26.0.12
+
+### Patch Changes
+
+- [#8968](https://github.com/electron-userland/electron-builder/pull/8968) [`2d25ec8c`](https://github.com/electron-userland/electron-builder/commit/2d25ec8ca9ff6dfc634323b7592335b0631f4e47) Thanks [@t3chguy](https://github.com/t3chguy)! - chore(docs): Fix typo in `SquirrelWindowsOptions`
+
+- [#8947](https://github.com/electron-userland/electron-builder/pull/8947) [`7ba4fea9`](https://github.com/electron-userland/electron-builder/commit/7ba4fea95825650f02749949632b351c75d3019a) Thanks [@mmaietta](https://github.com/mmaietta)! - fix: support `mas` packages for flipping fuses
+
+- [#8958](https://github.com/electron-userland/electron-builder/pull/8958) [`81e0c472`](https://github.com/electron-userland/electron-builder/commit/81e0c472fe2691b716aba5428dedc5da1c57e773) Thanks [@beyondkmp](https://github.com/beyondkmp)! - optimize workspace package resolution in dependency tree
+
+- [#8979](https://github.com/electron-userland/electron-builder/pull/8979) [`f24a2ce0`](https://github.com/electron-userland/electron-builder/commit/f24a2ce05cfbc88b79c1d743d13c898d70be99df) Thanks [@teamchong](https://github.com/teamchong)! - Fix: Azure trust signing fails with spaces in parameters
+
+- [#8957](https://github.com/electron-userland/electron-builder/pull/8957) [`ad151b9d`](https://github.com/electron-userland/electron-builder/commit/ad151b9dbefa746514dd15471e5ef8bf5eed1d9b) Thanks [@indutny-signal](https://github.com/indutny-signal)! - fix: pnpm collection of optional dependencies
+
+- Updated dependencies []:
+  - dmg-builder@26.0.12
+  - electron-builder-squirrel-windows@26.0.12
+
+## 26.0.11
+
+### Patch Changes
+
+- [#8941](https://github.com/electron-userland/electron-builder/pull/8941) [`14b96dfc`](https://github.com/electron-userland/electron-builder/commit/14b96dfcbb7e4fd114169c35b50932bf5777fcf1) Thanks [@mmaietta](https://github.com/mmaietta)! - fix: find cwd using getProjectRootPath for detecting package manager
+
+- [#8928](https://github.com/electron-userland/electron-builder/pull/8928) [`70d7c855`](https://github.com/electron-userland/electron-builder/commit/70d7c855360eb66b429f67a976709a52ce193a59) Thanks [@rotu](https://github.com/rotu)! - chore(docs): Document that detectUpdateChannel doesn't work when publishing to github
+
+- [#8932](https://github.com/electron-userland/electron-builder/pull/8932) [`e1ea62b0`](https://github.com/electron-userland/electron-builder/commit/e1ea62b0029c4adca20196ef060948777caeac37) Thanks [@gaaf](https://github.com/gaaf)! - fix: `after-install.tpl`: Detect if apparmor is enabled instead of just file-exists check
+
+- Updated dependencies [[`53a81939`](https://github.com/electron-userland/electron-builder/commit/53a81939b8c46061027ab36d8f9114c35b250a7e)]:
+  - builder-util@26.0.11
+  - dmg-builder@26.0.11
+  - electron-builder-squirrel-windows@26.0.11
+  - electron-publish@26.0.11
+
+## 26.0.10
+
+### Patch Changes
+
+- [#8890](https://github.com/electron-userland/electron-builder/pull/8890) [`3ce33edb`](https://github.com/electron-userland/electron-builder/commit/3ce33edbe0c809a8a3834577a8df41ba58ae9003) Thanks [@beyondkmp](https://github.com/beyondkmp)! - chore: replace the plist functionality in app-builder-bin with plist
+
+- [#8926](https://github.com/electron-userland/electron-builder/pull/8926) [`3caab3c4`](https://github.com/electron-userland/electron-builder/commit/3caab3c4226a73ab458ac5a315aff160c5500b94) Thanks [@mmaietta](https://github.com/mmaietta)! - fix: fix custom publisher check and throw error if not found
+
+- [#8915](https://github.com/electron-userland/electron-builder/pull/8915) [`8903c5df`](https://github.com/electron-userland/electron-builder/commit/8903c5df046b74411f3b1fa958cef9a5955d01ef) Thanks [@beyondkmp](https://github.com/beyondkmp)! - fix: improve atomicRMDir function in NSIS uninstaller
+
+- Updated dependencies []:
+  - dmg-builder@26.0.10
+  - electron-builder-squirrel-windows@26.0.10
+
+## 26.0.9
+
+### Patch Changes
+
+- [#8895](https://github.com/electron-userland/electron-builder/pull/8895) [`22da6442`](https://github.com/electron-userland/electron-builder/commit/22da64425182456eb4d1243138dde27c80d6adac) Thanks [@mmaietta](https://github.com/mmaietta)! - fix: remove Promise ability from AsyncEventEmitter as it's impossible to filter listeners by without being async
+
+- [#8885](https://github.com/electron-userland/electron-builder/pull/8885) [`4cc475ed`](https://github.com/electron-userland/electron-builder/commit/4cc475ed214861b99075d4639c92686803420174) Thanks [@mmaietta](https://github.com/mmaietta)! - fix: `node-linker=hoisted` fallback to utilize Npm module collector
+
+- [#8908](https://github.com/electron-userland/electron-builder/pull/8908) [`62029b08`](https://github.com/electron-userland/electron-builder/commit/62029b08c10a6b12d8ef30bf57ae61a877f297f4) Thanks [@mmaietta](https://github.com/mmaietta)! - fix: when using osx-sign, specifically pass in identity name instead of hash
+
+- [#8896](https://github.com/electron-userland/electron-builder/pull/8896) [`67b6f71f`](https://github.com/electron-userland/electron-builder/commit/67b6f71f85798dba4ce51dfb2cd012e04cd391db) Thanks [@BrandonXLF](https://github.com/BrandonXLF)! - fix: allow publishing to Snap Store to be disabled with snap specific publish options
+
+- [#8899](https://github.com/electron-userland/electron-builder/pull/8899) [`69184315`](https://github.com/electron-userland/electron-builder/commit/6918431560c6c4621e0dccf72b461872b74462ac) Thanks [@mmaietta](https://github.com/mmaietta)! - test: adding fixtures for lockfiles to support `--frozen-lockfile` (yarn, pnpm) and `ci` (npm)
+
+- Updated dependencies []:
+  - dmg-builder@26.0.9
+  - electron-builder-squirrel-windows@26.0.9
+
 ## 26.0.8
 
 ### Patch Changes
