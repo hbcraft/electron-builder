@@ -1,5 +1,5 @@
-import { downloadArtifact as _downloadArtifact, ElectronPlatformArtifactDetails, GotDownloaderOptions, MirrorOptions } from "@electron/get"
-import { PADDING } from "builder-util"
+import { downloadArtifact as _downloadArtifact, ElectronDownloadCacheMode, ElectronPlatformArtifactDetails, GotDownloaderOptions, MirrorOptions } from "@electron/get"
+import { getUserDefinedCacheDir, PADDING } from "builder-util"
 import * as chalk from "chalk"
 import { MultiProgress } from "electron-publish/out/multiProgress"
 
@@ -21,6 +21,8 @@ type ElectronGetDownloadConfig = {
 }
 
 export async function downloadArtifact(config: ElectronGetDownloadConfig, progress: MultiProgress | null) {
+  // Old cache is ignored if cache environment variable changes
+  const cacheDir = await getUserDefinedCacheDir()
   const cacheName = JSON.stringify(config)
 
   let promise = configToPromise.get(cacheName) // if rejected, we will try to download again
@@ -29,12 +31,12 @@ export async function downloadArtifact(config: ElectronGetDownloadConfig, progre
     return promise
   }
 
-  promise = doDownloadArtifact(config, progress)
+  promise = doDownloadArtifact(config, cacheDir, progress)
   configToPromise.set(cacheName, promise)
   return promise
 }
 
-async function doDownloadArtifact(config: ElectronGetDownloadConfig, progress: MultiProgress | null) {
+async function doDownloadArtifact(config: ElectronGetDownloadConfig, cacheDir: string | undefined, progress: MultiProgress | null) {
   const { electronDownload, arch, version, platformName, artifactName } = config
 
   const progressBar = progress?.createBar(`${" ".repeat(PADDING + 2)}[:bar] :percent | ${chalk.green(artifactName)}`, { total: 100 })
@@ -47,6 +49,8 @@ async function doDownloadArtifact(config: ElectronGetDownloadConfig, progress: M
     },
   }
   const artifactConfig: ElectronPlatformArtifactDetails = {
+    cacheMode: cacheDir ? ElectronDownloadCacheMode.ReadWrite : undefined,
+    cacheRoot: cacheDir,
     ...(electronDownload ?? {}),
     platform: platformName,
     arch,
