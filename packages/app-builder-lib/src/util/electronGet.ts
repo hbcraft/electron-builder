@@ -7,7 +7,7 @@ const configToPromise = new Map<string, Promise<string>>()
 
 export type ElectronDownloadOptions = Omit<
   ElectronPlatformArtifactDetails,
-  "platform" | "arch" | "version" | "artifactName" | "artifactSuffix" | "customFilename" | "tempDirectory" | "downloader" | "cacheMode" | "cacheRoot"
+  "platform" | "arch" | "version" | "artifactName" | "artifactSuffix" | "customFilename" | "tempDirectory" | "downloader" | "cacheMode" | "cacheRoot" | "downloadOptions"
 > & {
   mirrorOptions: Omit<MirrorOptions, "customDir" | "customFilename" | "customVersion">
 }
@@ -49,7 +49,7 @@ async function doDownloadArtifact(config: ElectronGetDownloadConfig, cacheDir: s
     },
   }
   const artifactConfig: ElectronPlatformArtifactDetails = {
-    cacheMode: cacheDir ? ElectronDownloadCacheMode.ReadWrite : undefined,
+    cacheMode: ElectronDownloadCacheMode.ReadOnly,
     cacheRoot: cacheDir,
     ...(electronDownload ?? {}),
     platform: platformName,
